@@ -1,4 +1,5 @@
-# 🌍 Flask Protected Story Map Template
+# 🌍 Flask Protected Story Map Template [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14811622.svg)](https://doi.org/10.5281/zenodo.14811622)
+
 
 A simple but powerful example of how to create password-protected Mapbox story maps using Flask. This template demonstrates basic authentication, token protection, and interactive storytelling - perfect for organizations wanting to share sensitive geographic data with authorized users.
 
