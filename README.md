@@ -21,21 +21,21 @@ This is a minimal example using:
 ## 📁 Project Structure
 ```bash
 📂 flask_storymap/
-├── 🔒 .env                    # Environment configuration
-├── 📄 app.py                  # Flask application entry point
-├── 📝 requirements.txt        # Python dependencies
+├── 🔒 .env                    
+├── 📄 app.py                  
+├── 📝 requirements.txt        
 ├── 📁 templates/
-│   └── 📄 login.html          # Login page template
+│   └── 📄 login.html          
 └── 📁 static/
-    ├── 📄 Config.js           # Mapbox configuration file
-    ├── 📄 storymap.html       # Main story map template
+    ├── 📄 Config.js           
+    ├── 📄 storymap.html       
     └── 📁 Content_website/
-        ├── 📁 DECOIN/        # Organization-specific content
-        ├── 📁 Ecominga/       # Organization-specific content
-        ├── 📁 FCAT/          # Organization-specific content
-        ├── 📁 Great_Leaf/     # Organization-specific content
-        ├── 🖼️ images/        # General images storage
-        ├── 📁 Tesoro_Escondido/ # Organization-specific content
+        ├── 📁 DECOIN/        
+        ├── 📁 Ecominga/       
+        ├── 📁 FCAT/          
+        ├── 📁 Great_Leaf/     
+        ├── 🖼️ images/        
+        ├── 📁 Tesoro_Escondido/ 
 
 ```
 
@@ -43,7 +43,7 @@ This is a minimal example using:
 
 1. Clone this repository
 ```bash
-git clone https://github.com/yourusername/flask-storymap
+git clone https://github.com/AzyAli/flask-protected-storymap
 cd flask-storymap
 ```
 2. Create virtual environment and install dependencies
