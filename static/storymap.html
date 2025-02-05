@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DQT5NNLBK6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('Config', 'G-DQT5NNLBK6');
+    </script>
+    <meta charset='utf-8' />
+    <title>Choco Alliance Story Map</title>
+    <meta name="description" content="Explore the conservation efforts in the Ecuadorian Choco through this interactive storytelling map." />
+    <link rel="icon" href="/static/Logos/CA-Favicon.png" sizes="32x32" />
+    <link rel="apple-touch-icon-precomposed" href="/static/Logos/Logo-white.png" />
+    <meta name="msapplication-TileImage" content="Logos/Logo-white.png" />
+    <meta property="og:title" content="Ecuadorian Choco: Conservation Efforts" />
+    <meta property="og:description" content="Interactive map detailing the conservation efforts in the Ecuadorian Choco region." />
+    <meta property="og:image:width" content="600" />
+    <meta property="og:image:height" content="400" />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;700&family=Roboto:wght@100;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+    <script src="https://kit.fontawesome.com/8acaa2e00f.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            margin:0; 
+            padding:0; 
+            font-family: 'Roboto', sans-serif;
+        }
+        a, a:hover, a:visited {
+            color: #fff;
+        }
+        h5 {
+            font-weight: normal;
+        }
+        #map {
+            top:0; 
+            height: 100vh;
+            width:100vw;
+            position: fixed;
+            z-index: -1;
+        }
+        #header {
+            margin: 3vh auto;
+            width: 80vw;
+            padding: 2vh;
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            background-color: rgba(14,17,22,0.6);   
+			border-radius: 25px;
+		}
+        #header h1 {
+            font-family: 'Roboto', 'Open Sans', 'Verdana', sans-serif;
+            font-size: 3rem;
+            text-transform: uppercase;
+        }
+		#header img { 
+			width: 25vw;
+            transition: opacity 0.3s ease;
+		}
+        #header img:hover {
+            opacity: 0.9;
+        }
+        #footer {
+            width: 100%;
+            min-height: 5vh;
+            padding-top: 2vh;
+            padding-bottom: 2vh;
+            text-align: center;
+            line-height: 25px;
+            font-size: 13px;
+        }
+        #features {
+            padding-top: 10vh;
+            padding-bottom: 10vh;
+        }
+		.fab, .fas {
+			    font-size: 15px;
+				margin: 10px 10px 0 0;
+				color: #fff;
+				text-decoration: none;
+		}
+        .hidden {
+            visibility: hidden;
+        }        
+        .centered {
+            width: 50vw;
+            margin: 0 auto;
+        }
+        .lefty {
+            width: 33vw;
+            margin-left: 5vw;
+        }
+        .righty {
+            width: 33vw;
+            margin-left: 62vw;
+        }
+        .fully {
+            width: 100%;
+            margin: auto;
+        }        
+        .light {
+            color: #444;
+            background-color: #fafafa;
+        }
+        .dark {
+            color: #fafafa;
+            background-color: rgba(8, 13, 22, 0.75);
+        }
+        .step {
+            padding-bottom: 50vh;
+            /* margin-bottom: 10vh; */
+            opacity: 0.25;
+        }
+        .step.active {
+            opacity: 0.9;
+	    }
+
+        .step div {
+            padding:  25px 50px;
+            line-height: 25px;
+            font-size: 13px;
+			border-radius: 25px;	
+        }
+        .step iframe {
+            width: 100%;
+            max-width: 560px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .step img {
+            width: 100%;
+        }
+
+		.step div p {
+            font-family: 'Roboto', 'Open Sans', 'Verdana', sans-serif;
+			font-size: 1.1rem;
+            line-height: 30px;			
+		}
+		
+		.step div h3 {
+			font-family: 'Lora', 'Georgia', serif;
+			font-size: 2rem;
+			font-weight: 1000;
+            line-height: 42px;
+		}
+
+        #rotate-mobile { 
+            display: none; 
+        }
+
+        @media (max-width: 750px) {
+            #features {
+                width: 90vw;
+                margin: 0 auto;
+            }
+			#header img { 
+				width: 80vw;
+			}
+            #header h1 {
+            font-family: 'Roboto', 'Open Sans', 'Verdana', sans-serif;
+            font-size: 1.9rem;
+            text-transform: uppercase;
+            }            
+            .lefty {
+            width: 90%;
+            }
+            .step div {
+            padding: 5px 15px;	
+            }            
+            .step div h3 {
+			font-family: 'Lora', 'Georgia', serif;
+			font-size: 1.5rem;
+			font-weight: 1000;
+		    }
+
+            #rotate-mobile { 
+            display: inline-block;
+            margin-top: 25px; 
+            }
+
+            #header a, #footer a {
+            color: #fff;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+            }
+
+            #header a:hover, #footer a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+            }
+        }
+
+        /* Fix issue on mobile browser where scroll breaks  */
+        .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan, 
+        .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan .mapboxgl-canvas {
+            touch-action: unset;
+        }        
+        </style>
+    <!-- Add this meta tag for CORS -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src * 'unsafe-inline' 'unsafe-eval';
+        script-src * 'unsafe-inline' 'unsafe-eval' blob:;
+        worker-src * blob:;
+        img-src * data: blob:;
+        style-src * 'unsafe-inline';
+        connect-src * data: blob:;
+    ">
+</head>
+<body>
+<div id="map"></div>
+<div id="story"></div>
+<script>
+    const mapboxToken = '{{ mapbox_token }}';
+</script>
+<script src="/static/Config.js"></script>
+<script>
+    var scroller; // Declare scroller here
+
+    var layerTypes = {
+        'fill': ['fill-opacity'],
+        'line': ['line-opacity'],
+        'circle': ['circle-opacity', 'circle-stroke-opacity'],
+        'symbol': ['icon-opacity', 'text-opacity'],
+        'raster': ['raster-opacity'],
+        'fill-extrusion': ['fill-extrusion-opacity'],
+        'heatmap': ['heatmap-opacity']
+    };
+    var alignments = {
+        'left': 'lefty',
+        'center': 'centered',
+        'right': 'righty',
+        'full': 'fully'
+    };
+    function getLayerPaintType(layer) {
+        try {
+            const mapLayer = map.getLayer(layer);
+            if (!mapLayer) {
+                console.warn(`Layer ${layer} not found`);
+                return ['opacity']; // default fallback
+            }
+            return layerTypes[mapLayer.type] || ['opacity'];
+        } catch (error) {
+            console.warn(`Error getting paint type for layer ${layer}:`, error);
+            return ['opacity']; // default fallback
+        }
+    }
+    function setLayerOpacity(layer) {
+        try {
+            if (!map.getLayer(layer.layer)) {
+                console.warn(`Layer ${layer.layer} not loaded yet, skipping opacity change`);
+                return;
+            }
+            const paintProps = getLayerPaintType(layer.layer);
+            paintProps.forEach(function(prop) {
+                var options = {};
+                if (layer.duration) {
+                    var transitionProp = prop + "-transition";
+                    options = { "duration": layer.duration };
+                    map.setPaintProperty(layer.layer, transitionProp, options);
+                }
+                map.setPaintProperty(layer.layer, prop, layer.opacity, options);
+            });
+        } catch (error) {
+            console.warn(`Error setting opacity for layer ${layer.layer}:`, error);
+        }
+    }
+    var story = document.getElementById('story');
+    var features = document.createElement('div');
+    features.setAttribute('id', 'features');
+    var header = document.createElement('div');
+    if (config.title) {
+        var titleText = document.createElement('h1');
+        titleText.innerHTML = config.title;
+        header.appendChild(titleText);
+    }
+    if (config.logo) {
+        var logoContainer = document.createElement('div');
+        logoContainer.innerHTML = config.logo;
+        header.appendChild(logoContainer);
+    }
+    if (config.bookmarks) {
+        var bookmarksText = document.createElement('h5');
+        bookmarksText.innerHTML = config.bookmarks;
+        header.appendChild(bookmarksText);
+    }
+    if (config.subtitle) {
+        var subtitleText = document.createElement('h2');
+        subtitleText.innerHTML = config.subtitle;
+        header.appendChild(subtitleText);
+    }
+    if (config.byline) {
+        var bylineText = document.createElement('p');
+        bylineText.innerHTML = config.byline;
+        header.appendChild(bylineText);
+    }
+    if (header.innerText.length > 0) {
+        header.classList.add(config.theme);
+        header.setAttribute('id', 'header');
+        story.appendChild(header);
+    }
+    config.chapters.forEach((record, idx) => {
+        var container = document.createElement('div');
+        var chapter = document.createElement('div');
+        if (record.title) {
+            var title = document.createElement('h3');
+            title.innerHTML = record.title;
+            chapter.appendChild(title);
+        }
+        if (record.video) {
+            var videoContainer = document.createElement('div');
+            videoContainer.innerHTML = record.video;
+            chapter.appendChild(videoContainer);
+        // } else if (record.image) {
+        //     var image = new Image();
+        //     image.src = record.image;
+        //     chapter.appendChild(image);
+        }
+        if (record.image) {
+            var image = new Image();
+            image.src = record.image;
+            chapter.appendChild(image);
+        }
+        if (record.description) {
+            var story = document.createElement('p');
+            story.innerHTML = record.description;
+            chapter.appendChild(story);
+            var returntotop = document.createElement('p');
+            returntotop.innerHTML = '<a href="#header" onclick="window.scrollTo(0,0); return false;">Back to top</a>';
+            chapter.appendChild(returntotop);
+        }
+        container.setAttribute('id', record.id);
+        container.classList.add('step');
+        if (idx === 0) {
+            container.classList.add('active');
+        }
+        chapter.classList.add(config.theme);
+        container.appendChild(chapter);
+        container.classList.add(alignments[record.alignment] || 'centered');
+        if (record.hidden) {
+            container.classList.add('hidden');
+        }
+        features.appendChild(container);
+    });
+    story.appendChild(features);
+    var footer = document.createElement('div');
+    if (config.footer) {
+        var footerText = document.createElement('p');
+        footerText.innerHTML = config.footer;
+        footer.appendChild(footerText);
+    }
+    if (footer.innerText.length > 0) {
+        footer.classList.add(config.theme);
+        footer.setAttribute('id', 'footer');
+        story.appendChild(footer);
+    }
+    mapboxgl.accessToken = config.accessToken;
+    const transformRequest = (url) => {
+        const hasQuery = url.indexOf("?") !== -1;
+        const suffix = hasQuery ? "&pluginName=scrollytellingV2" : "?pluginName=scrollytellingV2";
+        return {
+          url: url + suffix
+        }
+    };
+    const handleSourceError = (e) => {
+        console.error('Source loading error:', e);
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        scroller = scrollama();
+        function handleLayerLoad(layerId) {
+            return new Promise((resolve, reject) => {
+                if (map.getLayer(layerId)) {
+                    resolve();
+                } else {
+                    map.once('styledata', () => resolve());
+                }
+            });
+        }
+        map.on('style.load', async () => {
+            try {
+                await initializeLayers();
+                scroller.setup({
+                    step: '.step',
+                    offset: 0.5,
+                    progress: true
+                });
+            } catch (error) {
+                console.error('Error initializing map:', error);
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="https"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.open(this.href, '_blank');
+                });
+            });
+        });
+        const corsHeaders = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET'
+        };
+        async function loadMapSources() {
+            for (const layer of layers) {
+                try {
+                    await handleLayerLoad(layer.id);
+                } catch (error) {
+                    console.warn(`Failed to load layer ${layer.id}:`, error);
+                }
+            }
+        }
+    });
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: config.style,
+        center: config.chapters[0].location.center,
+        zoom: config.chapters[0].location.zoom,
+        bearing: config.chapters[0].location.bearing,
+        pitch: config.chapters[0].location.pitch,
+        interactive: false,
+        transformRequest: (url, resourceType) => {
+            if (url.includes('arcgis.com')) {
+                return {
+                    url: url,
+                    headers: {
+                        'Origin': window.location.origin
+                    }
+                };
+            }
+        }
+    });
+
+    // Add the load event listener to initialize layers
+    map.on('load', () => {
+        initializeLayers();
+    });
+
+    map.on('sourcedata', (e) => {
+        if (e.isSourceLoaded && !e.tile) {
+            console.log('Source loaded:', e.sourceId);
+        }
+    });
+    map.on('style.load', () => {
+        map.addSource('worldimagery', {
+            type: 'raster',
+            tiles: [
+                'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: 'Esri World Imagery'
+        });
+        map.addLayer({
+            id: 'world-imagery',
+            type: 'raster',
+            source: 'worldimagery',
+            minzoom: 0,
+            maxzoom: 22
+        }, map.getStyle().layers[0].id);
+        initializeLayers();
+    });
+    function initializeLayers() {
+        const layers = [
+            {
+                id: 'decoin-all',
+                color: '#00ff00',
+                url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/DECOIN/FeatureServer/0'
+            },
+            {
+            id: 'fcat-bilsa',
+            color: '#00ff00',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/FCAT___Bilsa/FeatureServer/0'
+            },
+            {
+            id: 'fcat-reserve',
+            color: '#99ccff',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/FCAT___Reserve/FeatureServer/0'
+            },
+            {
+            id: 'tma-jama-coaque',
+            color: '#00ffff',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/TMA_JAMA_COAQUE/FeatureServer/0'
+            },
+            {
+            id: 'tma-pata-de-patajo',
+            color: '#ffbf00',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/TMA_PATA_DE_PATAJO/FeatureServer/0'
+            },
+            {
+            id: 'tesoro-ecoregions',
+            color: '#808000',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Tesoro_Escondido_Reserve/FeatureServer/0'
+            },
+            {
+            id: 'tesoro-main-area',
+            color: '#008080',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Tesoro_Escondido_Reserve/FeatureServer/0'
+            },
+            {
+            id: 'ecominga-manduriacu',
+            color: '#0000ff',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Ecominga/FeatureServer/0'
+            },
+            {
+            id: 'ecominga-dracula',
+            color: '#ff00ff',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Dracula/FeatureServer/0'
+            },
+            {
+            id: 'great-leaf-esperanza',
+            color: '#ffff00',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/LA_ESPERANZA/FeatureServer/0'
+            },
+         
+        // Forest Change Layers
+            {
+            id: 'forest-loss',
+            color: '#8b4513',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Forest_Change/FeatureServer/0'
+            },
+            {
+            id: 'forest-loss-timeline',
+            color: '#a0522d',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Forest_Change/FeatureServer/2'
+            },
+            {
+            id: 'forest-gain',
+            color: '#228b22',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Forest_Change/FeatureServer/3'
+            },
+
+        // Protection Scheme Layers
+            {
+            id: 'protection-acus',
+            color: '#4a148c',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Protection_schemes/FeatureServer/0'
+            },
+            {
+            id: 'protection-acusmit',
+            color: '#800080',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Protection_schemes/FeatureServer/1'
+            },
+            {
+            id: 'protection-bosques',
+            color: '#6a1b9a',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Protection_schemes/FeatureServer/2'
+            },
+            {
+            id: 'protection-cotocachi',
+            color: '#4a148c',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Protection_schemes/FeatureServer/3'
+            },
+            {
+            id: 'protection-mache',
+            color: '#7b1fa2',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Protection_schemes/FeatureServer/4'
+            },
+            {
+            id: 'protection-biosfera',
+            color: '#9c27b0',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Protection_schemes/FeatureServer/5'
+            },
+
+        // Conservation Analysis Layers
+            {
+            id: 'mining-concessions',
+            color: '#ff0000',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Conservation_analysis/FeatureServer/1'
+            },
+            {
+            id: 'wildlife-corridors',
+            color: '#ffff00',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Conservation_analysis/FeatureServer/2'
+            },
+            {
+            id: 'terrestrial-ecoregions',
+            color: '#c62828',
+            url: 'https://services7.arcgis.com/PojvpgOuvaAklOT8/arcgis/rest/services/Conservation_analysis/FeatureServer/3'
+            }
+            
+        ];
+
+        const loadLayers = () => {
+            layers.forEach(layer => {
+                if (!map.getSource(layer.id)) {
+                    try {
+                        map.addSource(layer.id, {
+                            type: 'geojson',
+                            data: `${layer.url}/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson`,
+                            generateId: true
+                        });
+
+                        map.addLayer({
+                            id: layer.id,
+                            type: 'fill',
+                            source: layer.id,
+                            paint: {
+                                'fill-color': layer.color,
+                                'fill-opacity': 0,
+                                'fill-outline-color': '#ffffff'
+                            }
+                        });
+                    } catch (error) {
+                        console.warn(`Error loading layer ${layer.id}:`, error);
+                    }
+                }
+            });
+        };
+
+
+        if (map.isStyleLoaded()) {
+            loadLayers();
+        } else {
+            map.once('style.load', loadLayers);
+        }
+    }
+    map.on("load", function() {
+        if (config.use3dTerrain) {
+            map.addSource('mapbox-dem', {
+                'type': 'raster-dem',
+                'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                'tileSize': 512,
+                'maxzoom': 14
+            });
+            map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+            map.addLayer({
+                'id': 'sky',
+                'type': 'sky',
+                'paint': {
+                    'sky-type': 'atmosphere',
+                    'sky-atmosphere-sun': [0.0, 0.0],
+                    'sky-atmosphere-sun-intensity': 15
+                }
+            });
+        };
+        scroller
+            .setup({
+                step: '.step',
+                offset: 0.5,
+                progress: true
+            })
+            .onStepEnter(response => {
+                var chapter = config.chapters.find(chap => chap.id === response.element.id);
+                response.element.classList.add('active');
+                if (chapter.mapAnimation && typeof chapter.mapAnimation === 'object') {
+                    map.flyTo({
+                        center: chapter.location.center,
+                        zoom: chapter.location.zoom,
+                        pitch: chapter.location.pitch,
+                        bearing: chapter.location.bearing,
+                        duration: chapter.mapAnimation.duration || 2000,
+                        essential: chapter.mapAnimation.essential || true
+                    });
+                } else {
+                    map.flyTo(chapter.location);
+                }
+                if (config.showMarkers) {
+                    marker.setLngLat(chapter.location.center);
+                }
+                if (chapter.onChapterEnter.length > 0) {
+                    chapter.onChapterEnter.forEach(setLayerOpacity);
+                }
+                if (chapter.callback) {
+                    window[chapter.callback]();
+                }
+                if (chapter.rotateAnimation) {
+                    map.once('moveend', function() {
+                        const rotateNumber = map.getBearing();
+                        map.rotateTo(rotateNumber + 90, {
+                            duration: 24000,
+                            easing: function (t) {
+                                return t;
+                            }
+                        });
+                    });
+                }
+            })
+            .onStepExit(response => {
+                var chapter = config.chapters.find(chap => chap.id === response.element.id);
+                response.element.classList.remove('active');
+                if (chapter.onChapterExit.length > 0) {
+                    chapter.onChapterExit.forEach(setLayerOpacity);
+                }
+            });
+    });
+    window.addEventListener('resize', function() {
+        if (scroller) scroller.resize();
+    });
+
+
+</script>
+</body>
+</html>
+
